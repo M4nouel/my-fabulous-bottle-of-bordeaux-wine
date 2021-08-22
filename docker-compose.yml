@@ -1,0 +1,72 @@
+# Use postgres/example user/password credentials
+version: '3.1'
+
+services:
+
+  traefik:
+    image: "traefik:v2.3"
+    restart: always
+    command:
+      - "--log.level=INFO"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=true"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+  front:
+    build: ./front
+    restart: always
+    # ports:
+    #   - "80:3000"
+    expose:
+     - 3000
+    volumes:
+      - ./front/app/src:/usr/src
+    working_dir: /usr/src
+    environment:
+      - CI=true
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.front.rule=Host(`localhost`)"
+      - "traefik.http.routers.front.entrypoints=web"
+    command: |
+              /bin/bash -c \
+              "yarn install && yarn run start"
+
+  api:
+    build: ./api
+    restart: always
+    volumes:
+      - ./api:/app
+    # ports:
+    #   - 8088:80
+    expose:
+      - 80
+    entrypoint: /start-reload.sh
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.back.rule=Host(`localhost`) && PathPrefix(`/api`)"
+      - "traefik.http.middlewares.apipathstrip.stripprefix.prefixes=/api"
+      - "traefik.http.routers.back.middlewares=apipathstrip"
+      - "traefik.http.routers.back.entrypoints=web"
+
+  db:
+    image: postgres
+    restart: always
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d
+    environment:
+      POSTGRES_PASSWORD: example
+    expose:
+      - 5432
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8081:8080

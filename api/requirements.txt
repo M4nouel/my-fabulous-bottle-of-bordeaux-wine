@@ -1,0 +1,5 @@
+fastapi-sqlalchemy
+pydantic
+psycopg2-binary
+scikit-learn==0.24.2
+aiofiles
