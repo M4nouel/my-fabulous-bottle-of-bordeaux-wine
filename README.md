@@ -11,7 +11,7 @@ Tested and developed using Chrome on MacOS (not required).
 
 ## Architecture Overview
 
-[Architecture](images/dev_schema.png)
+![Architecture](images/dev_schema.png)
 
 - All services run in Docker containers.
 - The frontend is written using React.
@@ -29,7 +29,7 @@ Tested and developed using Chrome on MacOS (not required).
 - Open a terminal and `cd` into the cloned repo
 - Run `docker-compose up`
   - All other services will be availlable in a minute
-  - But the front container may take a while to install node modules. Wait to see this output before using it [node_modules](images/node_modules.png)
+  - But the front container may take a while to install node modules. Wait to see this output before using it ![node_modules](images/node_modules.png)
 
 Once everything's up, you can use/modify the app, hot reloading available on the front and the api.
 
@@ -45,13 +45,13 @@ then
 
 - OpenAPI docmentation of the API is availlable here http://localhost/api/docs.
 
-[swagger](images/swagger.png)
+![swagger](images/swagger.png)
 
 FYI: This interface allows to try/use/test the API endpoints if needed. This endpoint http://localhost/api/docs#/default/read_kneighbors_of_wine_wines_kneighbors_get will suggests a maximum of `count` wines based on the one identifyed by here `name` and `millesime`. These are ordered by `jaccard` distance.
 
 - Front availlable here http://localhost/.
 
-[front](images/app.png)
+![front](images/app.png)
 
   - The `Name` input performs delayed API request to search wines containing the input text in their name.
   - The result of this search is displayed in the list below. This list is virtualized (render the react elements when needed) and 'lazy loaded' (requests elements to the API when needed). In this way only a few data is fetch from the API and rendered to preserve performance and UX.
